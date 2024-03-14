@@ -33,63 +33,29 @@ public class Knight extends Piece{
      */
     Cell[][] cells = new Cell[8][8];
     @Override
-    public boolean isValidMove(int startPosX, int startPosY, int endPosX, int endPosY) {
-        //x,y -> my current position
+    public boolean isValidMove(int targetPosX, int targetPosY) {
+        if (!withinEdges(targetPosX, targetPosY)) return false;
+        //x,y -> current position of the knight
 
-        // (x-2,y-1),  (x-2, y+1);
-        // (x+2, y-1), (x+2, y+1)
+        // (x-2,y-1), (x-2,y+1) // two steps above and a step on right or left
+        // (x+2,y-1), (x+2,y+1) // two steps down and a step on right or left
 
-        //(x-1,y-2), (x-1,y+2)
-        //(x+1,y-2), (x+1,y+2)
+        // (x-1,y-2), (x-1,y+2) // one step above and two steps on right or left
+        // (x+1,y-2), (x+1,y+2) // one step down and two steps on right or left
 
-        //======================================
-        //{-2,-2,-2,-2, 1, 0, 1, 2, 2}//-2,-1,2
-        //{-1, 1,-2, 2,-2, 0, 2, -2,1}//-1,1,-2,2-2,
+        int[] row = {-2,-2,2,2,-1,-1,1,1};
+        int[] col = {-1,1,-1,1,-2,2,-2,2 };
 
-        //(x-2,y-1),
-        //(x-2,y+1);
-        //(x-1,y-2),
-        //(x-1,y+2)
-        //(x+1,y-2),
-        //(x,y),
-        //(x+1,y+2)
-        //(x+2, y-1),
-        //(x+2, y+1)
-
-        //x-1, x-2,x+1,x+2
-        //y-2, y-1, y-2, y+1
-//        0,0, (x-1,y+1), (x-2,y+2)
-//        0,0, (x+1,y-1), (x+2,y-2)
-
-        int[] row = {-2, -2, -1, -1, 1, 1, 2, 2};//-2,-1,2
-        int[] col = {-1, 1, -2, 2, -2, 2, -1, 1};//-1,1,-2,2-2,
-
-        if(x==endPosX && y==endPosY) return false;
+        if(x==targetPosX && y==targetPosY) return false;
         for(int i=0;i<8;i++) {
-            if (row[i] == endPosX && col[i] == endPosY && isWithinEdge(row[i], col[i])) {
-                if (!cells[row[i]][col[i]].isOccupied() || cells[row[i]][col[i]].getActivePiece().color != color) {
+            if (row[i] == targetPosX && col[i] == targetPosY) {
+                if (!cells[row[i]][col[i]].isOccupied() || cells[row[i]][col[i]].getActivePiece().getColor() != color) {
                     return true;
                 }
             }
         }
-//
-//        if(x-2==endPosX && y+1==endPosY && isWithinEdge(x-2,y+1)){
-//            if(!cells[x-2][y+1].isOccupied() || cells[x-2][y+1].getActivePiece().color!=color){
-//                return true;
-//            }
-//        }
-//
-//        if(x-2==endPosX && y+1==endPosY && isWithinEdge(x-2,y+1)){
-//            if(!cells[x-2][y+1].isOccupied() || cells[x-2][y+1].getActivePiece().color!=color){
-//                return true;
-//            }
-//        }
 
         return false;
     }
 
-    private boolean isWithinEdge(int posX, int posY){
-        if(posX>=0 && posX<8 && posY>=0 && posY<8) return true;
-        return false;
-    }
 }
