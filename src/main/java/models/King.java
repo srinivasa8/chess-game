@@ -1,0 +1,13 @@
+package models;
+
+public class King extends Piece{
+
+    public King(int x, int y, Color color) {
+        super(x, y, color);
+    }
+
+    @Override
+    public boolean isValidMove(int startPosX, int startPosY, int endPosX, int endPosY) {
+        return false;
+    }
+}
