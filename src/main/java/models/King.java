@@ -22,7 +22,7 @@ public class King extends Piece{
             for(int j=-1;j<1;j++) {
                 //target values are verified before this, so no need to verify whether they are within edge or not
                 if (x + i == targetX && y + j == targetY) {
-                    if (targetCell.isOccupied() || canCapture(targetCell)) {
+                    if (!targetCell.isOccupied() || canCapture(targetCell)) {
                         return true;
                     }
                 }
