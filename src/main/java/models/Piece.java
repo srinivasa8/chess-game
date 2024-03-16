@@ -12,19 +12,12 @@ public abstract class Piece {
         this.color=color;
     }
 
-//    public Piece(int x, int y) {
-//        this.x = x;
-//        this.y = y;
-//    }
-
     public abstract boolean isValidMove(Cell targetCell);
 
 
     public boolean canCapture(Cell targetCell){
         return !targetCell.getActivePiece().getColor().equals(color);
     }
-
-   // public abstract boolean canCapture(int targetPosX, int targetPosY);
 
     public boolean withinEdges(int targetX, int targetY){
         if(targetX>=0 && targetX<8 && targetY>=0 && targetY<8) return true;
@@ -71,10 +64,5 @@ public abstract class Piece {
     public int hashCode() {
         return Objects.hash(color, x, y);
     }
-
-//    @Override
-//    public boolean equals(Object ob){
-//        return false;
-//    }
 
 }

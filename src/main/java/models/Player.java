@@ -1,11 +1,5 @@
 package models;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import static models.Pieces.*;
-
 public class Player {
 
     private String name;
@@ -16,25 +10,6 @@ public class Player {
     private Bishop[] bishops;
     private Rook[] rooks;
     private Pawn[] pawns;
-
-    /*
-    private Queen queen;
-
-    private Knight knight1;
-    private Knight knight2;
-    private Rook rook1;
-    private Rook rook2;
-    private Bishop bishop1;
-    private Bishop bishop2;
-
-    private Pawn pawn1;
-    private Pawn pawn2;
-    private Pawn pawn3;
-    private Pawn pawn4;
-    private Pawn pawn5;
-    private Pawn pawn6;
-    private Pawn pawn7;
-    private Pawn pawn8;*/
 
     public Player(String name, Color color) {
         this.name = name;
