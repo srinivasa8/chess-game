@@ -4,39 +4,57 @@ public class Pawn extends Piece{
 
     private boolean isFirst; // first time pan can take two upward steps otherwise single step only.
 
-    public Pawn(int x, int y, Color color) {
-        super(x, y, color);
+    public Pawn(Color color) {
+        super(color);
         this.isFirst=true;
     }
 
     @Override
-    public boolean isValidMove(int targetX, int targetY) {
-
-        if (!withinEdges(targetX, targetY)) return false;
+    public boolean isValidMove(Cell targetCell) {
+        int targetX= targetCell.getX();
+        int targetY= targetCell.getY();
+        //outside the dges or can't be same cell
+        if (!withinEdges(targetX, targetY) || (x==targetX && y==targetY)) return false;
 
         boolean isWhite = color.equals(Color.WHITE);
+        boolean isValidMove = false;
 
-        if (isWhite && ((isFirst && (x + 2 == targetX && y == targetY))
-                || (x - 1 == targetX && y - 1 == targetX)
-                || (x - 1 == targetX && y + 1 == targetY))) {
-            return true;
-        } else if (!isWhite && ((isFirst && (x - 2 == targetX && y == targetY))
-                || (x + 1 == targetX && y - 1 == targetY)
-                || (x + 1 == targetX && y + 1 == targetX))) {
-            return true;
+        //For the column direction
+        if (isWhite && ((isFirst && (x - 2 == targetCell.getX() && y == targetCell.getY()))
+                || (x - 1 == targetCell.getX() && y == targetCell.getY()))) {
+            isValidMove = true;
+        } else if (!isWhite && ((isFirst && (x + 2 == targetCell.getX() && y == targetCell.getY()))
+                || (x - 1 == targetCell.getX() && y == targetCell.getY()))) {
+            isValidMove = true;
         }
 
-        if (color.equals(Color.WHITE) && (x - 1 == targetX && y - 1 == targetX)
-                || color.equals(Color.WHITE) && (x - 1 == targetX && y + 1 == targetY)
-                || color.equals(Color.BLACK) && (x + 1 == targetX && y - 1 == targetY)
-                || color.equals(Color.BLACK) && (x + 1 == targetX && y + 1 == targetX)
-        ) {
-            return true;
+        //For the diagonal direction, since pawn can capture
+        if (targetCell.isOccupied() && canCapture(targetCell)) {
+            isValidMove = true;
         }
-        isFirst = false;
-        return false;
+        if (isValidMove) {
+            isFirst = false;
+        }
+        return isValidMove;
     }
 
+
+    @Override
+    public boolean canCapture(Cell targetCell){
+
+        boolean isWhite =  getColor().equals(Color.WHITE);
+        //white pawn can move upward diagonal to capture piece => (x-1,y-1) , (x-1,y+1)
+        //Black pawn can move downward diagonal to capture piece => (x+1,y-1) , (x+1,y+1)
+        boolean canCapture=false;
+
+        if(isWhite && ((x - 1 == targetCell.getX() && y - 1 == targetCell.getY())
+                || (x - 1 == targetCell.getX() && y + 1 == targetCell.getY()))
+                || !isWhite && ((x + 1 == targetCell.getX() && y - 1 == targetCell.getY())
+                || (x + 1 == targetCell.getX() && y + 1 == targetCell.getY()))){
+            canCapture=true;
+        }
+        return super.canCapture(targetCell) && targetCell.isOccupied() && canCapture;
+    }
     public boolean isFirst() {
         return isFirst;
     }

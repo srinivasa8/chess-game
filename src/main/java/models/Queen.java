@@ -2,12 +2,12 @@ package models;
 
 public class Queen extends Piece{
 
-    public Queen(int x, int y, Color color) {
-        super(x, y, color);
+    public Queen(Color color) {
+        super(color);
     }
 
     @Override
-    public boolean isValidMove(int targetPosX, int targetPosY) {
+    public boolean isValidMove(Cell targetCell) {
         return false;
     }
 

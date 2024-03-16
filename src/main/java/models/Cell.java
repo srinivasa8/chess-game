@@ -1,13 +1,24 @@
 package models;
 
+import java.util.Objects;
+
 public class Cell {
 
     private int x;
     private int y;
-    private boolean occupied;
     private Color color;
 
+    private boolean occupied;
+
     private Piece activePiece;
+
+    public Cell(int x, int y, Piece activePiece){
+            this.x=x;
+            this.y=y;
+            this.activePiece=activePiece;
+            this.occupied=true;
+            activePiece.setPosition(x,y);
+    }
 
     public int getX() {
         return x;
@@ -49,4 +60,15 @@ public class Cell {
         this.activePiece = activePiece;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Cell cell)) return false;
+        return x == cell.x && y == cell.y && occupied == cell.occupied && color == cell.color && Objects.equals(activePiece, cell.activePiece);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y, color, occupied, activePiece);
+    }
 }

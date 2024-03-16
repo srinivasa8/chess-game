@@ -2,12 +2,12 @@ package models;
 
 public class Bishop extends Piece{
 
-    public Bishop(int x, int y, Color color) {
-        super(x, y, color);
+    public Bishop(Color color) {
+        super(color);
     }
 
     @Override
-    public boolean isValidMove(int targetPosX, int targetPosY) {
+    public boolean isValidMove(Cell targetCell) {
         return false;
     }
 

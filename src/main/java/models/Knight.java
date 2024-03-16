@@ -1,8 +1,8 @@
 package models;
 
 public class Knight extends Piece{
-    public Knight(int x, int y, Color color) {
-        super(x, y, color);
+    public Knight(Color color) {
+        super(color);
     }
 
     /*
@@ -33,8 +33,10 @@ public class Knight extends Piece{
      */
     Cell[][] cells = new Cell[8][8];
     @Override
-    public boolean isValidMove(int targetPosX, int targetPosY) {
-        if (!withinEdges(targetPosX, targetPosY)) return false;
+    public boolean isValidMove(Cell targetCell) {
+        int targetX = targetCell.getX();
+        int targetY = targetCell.getY();
+        if (!withinEdges(targetX, targetY)) return false;
         //x,y -> current position of the knight
 
         // (x-2,y-1), (x-2,y+1) // two steps above and a step on right or left
@@ -46,12 +48,12 @@ public class Knight extends Piece{
         int[] row = {-2,-2,2,2,-1,-1,1,1};
         int[] col = {-1,1,-1,1,-2,2,-2,2 };
 
-        if(x==targetPosX && y==targetPosY) return false;
+        if(x==targetCell.getX() && y== targetCell.getY()) return false;
         for(int i=0;i<8;i++) {
-            if (row[i] == targetPosX && col[i] == targetPosY) {
-                if (!cells[row[i]][col[i]].isOccupied() || cells[row[i]][col[i]].getActivePiece().getColor() != color) {
+            if (row[i] == targetX && col[i] == targetY) {
+                 if (!targetCell.isOccupied() || canCapture(targetCell)) {
                     return true;
-                }
+                 }
             }
         }
 

@@ -1,18 +1,28 @@
 package models;
 
+import java.util.Objects;
+
 public abstract class Piece {
 
     protected Color color;
     protected int x;
     protected int y;
 
-    public Piece(int x, int y, Color color) {
-        this.x = x;
-        this.y = y;
+    public Piece(Color color) {
         this.color=color;
     }
 
-    public abstract boolean isValidMove(int targetPosX, int targetPosY);
+//    public Piece(int x, int y) {
+//        this.x = x;
+//        this.y = y;
+//    }
+
+    public abstract boolean isValidMove(Cell targetCell);
+
+
+    public boolean canCapture(Cell targetCell){
+        return !targetCell.getActivePiece().getColor().equals(color);
+    }
 
    // public abstract boolean canCapture(int targetPosX, int targetPosY);
 
@@ -44,5 +54,27 @@ public abstract class Piece {
     public void setY(int y) {
         this.y = y;
     }
+
+    public void setPosition(int x, int y){
+        this.x=x;
+        this.y=y;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Piece piece)) return false;
+        return x == piece.x && y == piece.y && color == piece.color;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(color, x, y);
+    }
+
+//    @Override
+//    public boolean equals(Object ob){
+//        return false;
+//    }
 
 }
