@@ -10,7 +10,7 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public boolean isValidMove(Cell targetCell) {
+    public boolean isValidMove(Cell targetCell, Cell[][] cells) {
         int targetX = targetCell.getX();
         int targetY = targetCell.getY();
         //outside the dges or can't be same cell

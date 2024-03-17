@@ -14,11 +14,11 @@ public abstract class Piece {
         this.name=name;
     }
 
-    public abstract boolean isValidMove(Cell targetCell);
+    public abstract boolean isValidMove(Cell targetCell, Cell[][] cells);
 
 
     public boolean canCapture(Cell targetCell){
-        return !targetCell.getActivePiece().getColor().equals(color);
+        return targetCell==null || !targetCell.getActivePiece().getColor().equals(color);
     }
 
     public boolean withinEdges(int targetX, int targetY){

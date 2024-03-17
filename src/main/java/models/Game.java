@@ -32,12 +32,24 @@ public class Game {
     private final List<Piece> KilledPieces = new ArrayList<>();
 
     private MoveInput takeInput(){
+        //while(true)
         Scanner sc = new Scanner(System.in);
-        String input = sc.nextLine();
-        if(input.contains(GameStatus.RESIGNED.toString())){
-            return new MoveInput(true);
+        String[] commands;
+        boolean isValidInput = false;
+        while(true) {
+            System.out.println(" Enter the input in the form of {sourceX} {sourceY} {targetX} {targetY} or {RESIGN}");
+            String input = sc.nextLine();
+            if (input.contains(GameStatus.RESIGN.toString())) {
+                return new MoveInput(true);
+            }
+             commands = input.split(" ");
+            if(commands.length == 4 ) {
+                isValidInput = true;
+                break;
+            } else{
+               System.out.println(" Please enter valid input again: ");
+            }
         }
-        String[] commands = input.split(" ");
         int sourceX = Integer.parseInt(commands[0]);
         int sourceY = Integer.parseInt(commands[1]);
         int targetX = Integer.parseInt(commands[2]);
@@ -78,8 +90,8 @@ public class Game {
         Cell targetCell = chessBoard.getCell(targetX,targetY);
         if(targetCell==null) return false;
         Cell currentKingCell = chessBoard.getCell(currentPlayer.getKing().getX(),currentPlayer.getKing().getY());
-
-        if(piece.isValidMove(targetCell) && !isCheck(oppositePlayer, currentKingCell)){//if diagonal empty for pawn, it won't be true;
+        Cell[][] cells = chessBoard.getCells();
+        if(piece.isValidMove(targetCell,cells) && !isCheck(oppositePlayer, currentKingCell)){//if diagonal empty for pawn, it won't be true;
             System.out.println("[ENTERED]: Valid move + not check");
             if(targetCell.isOccupied() && piece.canCapture(targetCell)){
                 piece.setX(targetX);
@@ -136,39 +148,59 @@ public class Game {
     boolean isCheck(Player oppositePlayer, Cell currentKingCell){
 
         //Only queen, rook, bishop, knight, other king can attack a king
-
-        if(oppositePlayer.getKing().isValidMove(currentKingCell)){
+        Cell[][] cells = chessBoard.getCells();
+        if(oppositePlayer.getKing().isValidMove(currentKingCell,cells)){
+            System.out.println("Other king threat! x: "+oppositePlayer.getKing().getX()+" y: "+oppositePlayer.getKing().getY());
             return true;
         }
-        if(oppositePlayer.getQueen().isValidMove(currentKingCell)) {
+        if(oppositePlayer.getQueen().isValidMove(currentKingCell,cells)) {
+            System.out.println("Other queen threat! x: "+oppositePlayer.getQueen().getX()+" y: "+oppositePlayer.getQueen().getY());
            return true;
         }
         Rook [] rooks = oppositePlayer.getRooks();
 
         for(Rook rook : rooks){
-            if(rook.isValidMove(currentKingCell)) return true;
+            if(rook.isValidMove(currentKingCell,cells)) {
+                System.out.println("Other rook threat! x: "+rook.getX()+" y: "+rook.getY());
+                return true;
+            }
         }
 
         Knight[] knights = oppositePlayer.getKnights();
         for(Knight knight : knights){
-            if(knight.isValidMove(currentKingCell)) return true;
+            if(knight.isValidMove(currentKingCell,cells)) {
+                System.out.println("Other knight threat! x: "+knight.getX()+" y: "+knight.getY());
+                return true;
+            }
         }
 
         Bishop[] bishops = oppositePlayer.getBishops();
 
         for(Bishop bishop : bishops){
-            if(bishop.isValidMove(currentKingCell)) return true;
+            if(bishop.isValidMove(currentKingCell,cells)) {
+                System.out.println("Other bishop threat! x: "+bishop.getX()+" y: "+bishop.getY());
+                return true;
+            }
+        }
+
+        Pawn[] pawns = oppositePlayer.getPawns();
+        for(Pawn pawn : pawns){
+            if(pawn.isValidMove(currentKingCell,cells)) {
+                System.out.println("Other pawn threat! x: "+pawn.getX()+" y: "+pawn.getY());
+                return true;
+            }
         }
         return false;
     }
 
-    boolean isCheckMate(Player player,Player oppositePlayer){
-        King king = player.getKing();
-        Cell kingCell  = chessBoard.getCell(king.getX(), king.getY());
-        if(isCheck(oppositePlayer,kingCell)){
+    boolean isCheckMate(Player currentPlayer, Player oppositePlayer) {
+        King king = oppositePlayer.getKing();
+        Cell kingCell = chessBoard.getCell(king.getX(), king.getY());
+        if (isCheck(currentPlayer, kingCell)) {
             HashSet<Cell> possibleMoves = king.getPossibleMoves(chessBoard.getCells());
-            for(Cell cell : possibleMoves){
-                if(!isCheck(oppositePlayer,cell)){
+            System.out.println("set: " + possibleMoves);
+            for (Cell cell : possibleMoves) {
+                if (!isCheck(currentPlayer, cell)) {
                     return false;
                 }
             }
@@ -195,7 +227,7 @@ public class Game {
         q.add(whitePlayer);
         q.add(blackPlayer);
         // while()
-        Player oppositePlayer = blackPlayer;
+        Player oppositePlayer = null;
         Player currentPlayer = null;
         System.out.print("---------------GAME STARTED!---------------");
         while (!q.isEmpty()) {
@@ -207,19 +239,22 @@ public class Game {
                 oppositePlayer = whitePlayer;
             } else{
                 System.out.print(" WHITE TURN: ");
+                oppositePlayer=blackPlayer;
             }
-
+            boolean isResigned=false;
             while(true) {
-                System.out.print(" Enter your input: ");
+                //System.out.print(" Enter your input: ");
                 MoveInput moveInput = takeInput();
                 if (moveInput.isResigned()) {
                     System.out.print(currentPlayer.getName() + " resigned. so " + oppositePlayer.getName() + " WON!");
                     System.out.print("Congratulations!");
+                    isResigned=true;
                     break;
                 }
                 boolean isMoved = move(moveInput.getCurrentX(), moveInput.getCurrentY(), moveInput.getTargetX(), moveInput.getTargetY(), currentPlayer, oppositePlayer);
                 if (isMoved) break;
             }
+            if(isResigned) break;
             chessBoard.printBoard();
             if (isCheckMate(currentPlayer, oppositePlayer)) {
                 System.out.print("CHECK MATE!");
@@ -230,4 +265,8 @@ public class Game {
         }
         System.out.print("---------------GAME ENDED!---------------");
     }
+
+//    void batchMoves(){
+//        move()
+//    }
 }

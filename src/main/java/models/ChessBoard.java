@@ -69,7 +69,7 @@ public class ChessBoard {
 
 
     void addIfValid(HashSet<Cell> list, Cell cell, Piece piece) {
-        if (piece.isValidMove(cell)) {
+        if (piece.isValidMove(cell,cells)) {
             list.add(cell);
         }
     }
@@ -102,10 +102,27 @@ public class ChessBoard {
     }
 
     void printBoard(){
+        String color = "\u001B[40m";//black
+        String RESET = "\u001B[0m";
+        String GREEN = "\u001B[32m";
+//        White:
+//
+//        Yellow: \u001B[33m
+//
+//        Black: \u001B[30m
         for(Cell[] row : cells){
             for(Cell cell : row) {
                 String print = cell.isOccupied() ? cell.getActivePiece().getName() : "X";
-                System.out.print(" "+print+" ");
+               // System.out.println(GREEN + "This text is green." + RESET);
+                color = "\u001B[30m";//black
+                if(cell.isOccupied() && cell.getActivePiece().getColor().equals(Color.WHITE)){
+                   color = "\u001B[37m";//
+                }
+                if(print.equals("X")){
+                    color = "\u001B[33m";
+                }
+                String reset="\u001B[0m";
+                System.out.print(color+" "+print+" "+reset);
             }
             System.out.println();
         }

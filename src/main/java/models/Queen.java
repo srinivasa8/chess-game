@@ -7,7 +7,7 @@ public class Queen extends Piece{
     }
 
     @Override
-    public boolean isValidMove(Cell targetCell) {
+    public boolean isValidMove(Cell targetCell, Cell[][] cells) {
 
         int targetX = targetCell.getX();
         int targetY = targetCell.getY();
@@ -32,69 +32,91 @@ public class Queen extends Piece{
         // 0 8
         //4 4
         //0 4
-        Cell[][] cells =null;
-        for(int i = x-1; i>=0; i--) {
-            System.out.println("nx:"+x+" ny:"+y);
-            if(hasBlocker(cells[x][i])|| hasBlocker(cells[i][y])) return false;
-            if ((targetX==x && targetY==i) || (targetX==i && targetY==y)) {
-                isValidMove = true;
+        //Before element in x
+        for(int i = y-1; i>=0; i--) {
+            System.out.println("nx:"+x+" ny:"+y+" i:"+i);
+            if(cells[x][i].isOccupied()){
+                if(cells[x][i].getActivePiece().getColor().equals(color)){
+                    isValidMove =false;
+                } else{
+                    isValidMove = (targetX == x && targetY == i);
+                }
                 break;
+            } else{
+                isValidMove = (targetX == x && targetY == i);
             }
         }
-
-        for(int i = x+1; i<8; i++) {
-            System.out.println("nx:"+x+" ny:"+y);
-            if(hasBlocker(targetCell)) return false;
-            if ((targetX==x && targetY==i) || (targetX==i && targetY==y)) {
-                isValidMove = true;
-                break;
-            }
-        }
-
-//        for(int i=x;i<8-x;i++) {
-//            if(hasBlocker(targetCell)) return false;
-//            if ((targetX==x && targetY==i) || (targetX==i && targetY==y)) {
-//                    isValidMove =true;
-//                    break;
-//            }
-//        }
-//        int tempX = x;
-//        int tempY = y;
-//
-//        //top right /
-//        //if(x!==targetX)
-//        boolean hasXBlocker = false;
-//        while (x==targetX && tempY + 1 < 8) {
-//            if (targetY == tempY + 1) {
-//                isValidMove = true;
-//                if(hasBlocker(targetCell))
-//                break;
-//            } else {
-//                tempX--;
-//                tempY++;
-//            }
-//        }
 
         if(!isValidMove) {
-            isValidMove = isDiagonallyValidMove(targetCell, targetX, targetY, isValidMove);
+            //After element in x
+            for (int i = y + 1; i < 8; i++) {
+                System.out.println("nx:" + x + " ny:" + y);
+                if(cells[x][i].isOccupied()){
+                    if(cells[x][i].getActivePiece().getColor().equals(color)){
+                        isValidMove =false;
+                    } else{
+                        isValidMove = (targetX == x && targetY == i);
+                    }
+                    break;
+                } else{
+                    isValidMove = (targetX == x && targetY == i);
+                }
+            }
+        }
+
+        if(!isValidMove) {
+            //Above element in y
+            for (int i = x - 1; i >=0; i--) {
+                System.out.println("nx:" + x + " ny:" + y + " i:"+i);
+                if(cells[i][y].isOccupied()){
+                    if(cells[i][y].getActivePiece().getColor().equals(color)){
+                        isValidMove =false;
+                    } else{
+                        isValidMove = (targetX == i && targetY == y);
+                    }
+                    break;
+                } else{
+                    isValidMove = (targetX == i && targetY == y);
+                }
+            }
+        }
+        if(!isValidMove) {
+                //Below element in y
+                for (int i = x + 1; i < 8; i++) {
+                    System.out.println("nx:" + x + " ny:" + y);
+                    if(cells[i][y].isOccupied()){
+                        if(cells[i][y].getActivePiece().getColor().equals(color)){
+                            isValidMove =false;
+                        } else{
+                            isValidMove = (targetX == i && targetY == y);
+                        }
+                        break;
+                    } else{
+                        isValidMove = (targetX == i && targetY == y);
+                    }
+               }
+        }
+        if(!isValidMove) {
+            isValidMove = isDiagonallyValidMove(targetCell, targetX, targetY, isValidMove,cells);
 
         }
         return isValidMove && (!targetCell.isOccupied() || canCapture(targetCell));
     }
 
-    boolean hasBlocker(Cell targetCell){
+    private boolean hasBlocker(Cell targetCell){
         return targetCell.isOccupied() && targetCell.getActivePiece().getColor().equals(color);
     }
-    private boolean isDiagonallyValidMove(Cell targetCell, int targetX, int targetY, boolean isValidMove) {
+
+    private boolean isDiagonallyValidMove(Cell targetCell, int targetX, int targetY, boolean isValidMove, Cell[][] cells) {
         int tempX = x;
         int tempY = y;
 
         //top right /
         while (tempX - 1 >= 0 && tempY + 1 < 8) {
-            System.out.println("tempX:"+(tempX-1)+" tempY:"+(tempY+1));
-            if(hasBlocker(targetCell)) return false;
+         //   System.out.println("tempX:"+(tempX-1)+" tempY:"+(tempY+1));
+            if(hasBlocker(cells[tempX-1][tempY+1])) break;
             if ((targetX == tempX - 1) && (targetY == tempY + 1)) {
-                isValidMove = true;
+                isValidMove =true;
                 break;
             } else {
                 tempX--;
@@ -106,8 +128,8 @@ public class Queen extends Piece{
         tempY = y;
         //bottom left
         while (tempX + 1 < 8 && tempY - 1 >= 0 && !isValidMove) {
-            System.out.println("tempX:"+(tempX-1)+" tempY:"+(tempY-1));
-            if(hasBlocker(targetCell)) return false;
+          //  System.out.println("tempX:"+(tempX-1)+" tempY:"+(tempY-1));
+            if(hasBlocker(cells[tempX+1][tempY-1])) break;
             if ((targetX == tempX + 1) && (targetY == tempY - 1)) {
                 isValidMove = true;
                 break;
@@ -121,8 +143,8 @@ public class Queen extends Piece{
         tempY = y;
         //bottom right
         while (tempX + 1 < 8 && tempY + 1 < 8 && !isValidMove) {
-            System.out.println("tempX:"+(tempX+1)+" tempY:"+(tempY+1));
-            if(hasBlocker(targetCell)) return false;
+          //  System.out.println("tempX:"+(tempX+1)+" tempY:"+(tempY+1));
+            if(hasBlocker(cells[tempX+1][tempY+1])) break;
             if ((targetX == tempX + 1) && (targetY == tempY + 1)) {
                 isValidMove = true;
                 break;
@@ -136,8 +158,8 @@ public class Queen extends Piece{
         tempY = y;
         //top left
         while (tempX - 1 >= 0 && tempY - 1 >= 0 && !isValidMove) {
-            System.out.println("tempX:"+(tempX-1)+" tempY:"+(tempY-1));
-            if(hasBlocker(targetCell)) return false;
+            //System.out.println("tempX:"+(tempX-1)+" tempY:"+(tempY-1));
+            if(hasBlocker(cells[tempX-1][tempY-1])) break;
             if ((targetX == tempX - 1) && (targetY == tempY - 1)) {
                 isValidMove = true;
                 break;

@@ -7,7 +7,7 @@ public class Knight extends Piece {
     }
 
     @Override
-    public boolean isValidMove(Cell targetCell) {
+    public boolean isValidMove(Cell targetCell, Cell[][] cells) {
         int targetX = targetCell.getX();
         int targetY = targetCell.getY();
         if (!withinEdges(targetX, targetY)) return false;
@@ -22,15 +22,18 @@ public class Knight extends Piece {
         int[] row = {-2, -2, 2, 2, -1, -1, 1, 1};
         int[] col = {-1, 1, -1, 1, -2, 2, -2, 2};
 
-        if (x == targetCell.getX() && y == targetCell.getY()) return false;
+        if (x == targetX && y == targetY) return false;
         for (int i = 0; i < 8; i++) {
-            if (row[i] == targetX && col[i] == targetY) {
+           // System.out.println("x:"+targetX+" y:"+targetY);
+            //5 2
+            //5-2 =3,2-1=1=> 3,1
+            //3,3. 7,1. 7,3. 4 0. 4 4. 6,0. 6 4
+            if (x+row[i] == targetX && y+col[i] == targetY) {
                 if (!targetCell.isOccupied() || canCapture(targetCell)) {
                     return true;
                 }
             }
         }
-
         return false;
     }
 

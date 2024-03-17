@@ -9,7 +9,7 @@ public class King extends Piece {
     }
 
     @Override
-    public boolean isValidMove(Cell targetCell) {
+    public boolean isValidMove(Cell targetCell,  Cell[][] cells) {
         int targetX = targetCell.getX();
         int targetY = targetCell.getY();
         if (!withinEdges(targetX, targetY) || (x == targetY && y == targetY)) return false;
@@ -30,10 +30,11 @@ public class King extends Piece {
         HashSet<Cell> possibleMoves = new HashSet<>();
         for (int i = -1; i < 1; i++) {
             for (int j = -1; j < 1; j++) {
+                if(i==0 && j==0) continue;
                 int newX = x + i;
                 int newY = y + j;
-                if (withinEdges(newX, newY) && cells[newX][newY].isOccupied() || canCapture(cells[newX][newY])) {
-                    possibleMoves.add(cells[newX][newY]);
+                if (withinEdges(newX, newY) && (!cells[newX][newY].isOccupied() || canCapture(cells[newX][newY]))) {
+                    possibleMoves.add(cells[newX][newY]);//note
                 }
             }
         }
