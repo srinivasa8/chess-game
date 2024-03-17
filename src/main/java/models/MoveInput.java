@@ -17,7 +17,7 @@ public class MoveInput {
         this.currentY = currentY;
         this.targetX = targetX;
         this.targetY = targetY;
-        this.isResigned=true;
+        this.isResigned = false;
     }
 
     public int getCurrentX() {

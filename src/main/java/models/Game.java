@@ -41,7 +41,7 @@ public class Game {
         int sourceX = Integer.parseInt(commands[0]);
         int sourceY = Integer.parseInt(commands[1]);
         int targetX = Integer.parseInt(commands[2]);
-        int targetY = Integer.parseInt(commands[4]);
+        int targetY = Integer.parseInt(commands[3]);
         return new MoveInput(sourceX,sourceY,targetX,targetY);
     }
 
@@ -50,31 +50,37 @@ public class Game {
     //makeMove
     //element @src belong to same user ? if not throw not valid piece or your piece
     //isInvalid?
-    public void move(int x, int y, int targetX, int targetY){
+    public boolean move(int x, int y, int targetX, int targetY, Player currentPlayer, Player oppositePlayer ){
 
         if(!withinEdges(targetX, targetY)){
-            System.out.println("No piece found!");
-            return;
+            System.out.println("[ERROR]: No piece found!");
+            return false;
         }
 
         Cell cell = chessBoard.getCell(x,y);//[x][y];
 
         if(cell==null || !cell.isOccupied()){
-            System.out.println("No piece found!");
-            return;
+            System.out.println("[ERROR]: No piece found!");
+            return false;
         }
 
         Piece piece = cell.getActivePiece();
-        Player currentPlayer= whitePlayer;
-        Player oppositePlayer= blackPlayer;
-        if(!isWhitePlayerTurn){
-            currentPlayer=blackPlayer;
-            oppositePlayer=whitePlayer;
+        if(!piece.getColor().equals(currentPlayer.getColor())){
+            System.out.println("[ERROR]: You can move only your colored piece!");
+            return false;
         }
+//        Player currentPlayer= whitePlayer;
+//        Player oppositePlayer= blackPlayer;
+//        if(!isWhitePlayerTurn){
+//            currentPlayer=blackPlayer;
+//            oppositePlayer=whitePlayer;
+//        }
         Cell targetCell = chessBoard.getCell(targetX,targetY);
+        if(targetCell==null) return false;
         Cell currentKingCell = chessBoard.getCell(currentPlayer.getKing().getX(),currentPlayer.getKing().getY());
 
         if(piece.isValidMove(targetCell) && !isCheck(oppositePlayer, currentKingCell)){//if diagonal empty for pawn, it won't be true;
+            System.out.println("[ENTERED]: Valid move + not check");
             if(targetCell.isOccupied() && piece.canCapture(targetCell)){
                 piece.setX(targetX);
                 piece.setY(targetY);
@@ -89,6 +95,7 @@ public class Game {
                 cell.setActivePiece(null);
             }
             else if(!targetCell.isOccupied()){
+                System.out.println("[ADDING]: @"+targetX+" @"+targetY);
                 piece.setX(targetX);
                 piece.setY(targetY);
 
@@ -99,12 +106,14 @@ public class Game {
                 cell.setActivePiece(null);
             }
             else {
-                System.out.println("Invalid move!");
+                System.out.println("[ERROR]: Invalid move!");
+                return false;
             }
         } else{
-            System.out.println("Invalid move!");
-            //  return;
+            System.out.println("[ERROR2]:Invalid move......!");
+             return false;
         }
+        return true;
 
     }
 
@@ -188,20 +197,30 @@ public class Game {
         // while()
         Player oppositePlayer = blackPlayer;
         Player currentPlayer = null;
+        System.out.print("---------------GAME STARTED!---------------");
         while (!q.isEmpty()) {
-            System.out.print("---------------GAME STARTED!---------------");
-            currentPlayer = q.poll();
 
+            currentPlayer = q.poll();
+            System.out.print("color:: "+currentPlayer.getColor() +" userId: "+ currentPlayer.getName());
             if (!currentPlayer.getColor().equals(Color.WHITE)) {
+                System.out.print(" BLACK TURN: ");
                 oppositePlayer = whitePlayer;
+            } else{
+                System.out.print(" WHITE TURN: ");
             }
-            MoveInput moveInput = takeInput();
-            if (moveInput.isResigned()) {
-                System.out.print(currentPlayer.getName() + " resigned. so " + oppositePlayer.getName() + " WON!");
-                System.out.print("Congratulations!");
-                break;
+
+            while(true) {
+                System.out.print(" Enter your input: ");
+                MoveInput moveInput = takeInput();
+                if (moveInput.isResigned()) {
+                    System.out.print(currentPlayer.getName() + " resigned. so " + oppositePlayer.getName() + " WON!");
+                    System.out.print("Congratulations!");
+                    break;
+                }
+                boolean isMoved = move(moveInput.getCurrentX(), moveInput.getCurrentY(), moveInput.getTargetX(), moveInput.getTargetY(), currentPlayer, oppositePlayer);
+                if (isMoved) break;
             }
-            move(moveInput.getCurrentX(), moveInput.getCurrentY(), moveInput.getTargetX(), moveInput.getTargetY());
+            chessBoard.printBoard();
             if (isCheckMate(currentPlayer, oppositePlayer)) {
                 System.out.print("CHECK MATE!");
                 System.out.print(currentPlayer.getName() + " WON!");

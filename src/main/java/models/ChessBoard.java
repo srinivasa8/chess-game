@@ -9,7 +9,7 @@ public class ChessBoard {
         this.cells = new Cell[8][8];
         initializeCellsWithPieces(whitePlayer);
         initializeCellsWithPieces(blackPlayer);
-
+        initializeEmptyCells();
     }
 
     void initializeCellsWithPieces(Player player) {
@@ -39,9 +39,17 @@ public class ChessBoard {
         Pawn[] pawns = player.getPawns();
 
         for (int i = 0; i < pawns.length; i++) {
-            cells[secondRowIndex][i] = new Cell(firstRowIndex, i, pawns[i]);
+            cells[secondRowIndex][i] = new Cell(secondRowIndex, i, pawns[i]);
         }
 
+    }
+
+    void initializeEmptyCells() {
+        for(int i=2;i<6;i++){
+            for(int j=0;j<8;j++){
+                cells[i][j] = new Cell(i, j);
+            }
+        }
     }
 
     public Cell[][] getCells() {
@@ -91,6 +99,16 @@ public class ChessBoard {
             }
         }
         return possibleMoveSet;
+    }
+
+    void printBoard(){
+        for(Cell[] row : cells){
+            for(Cell cell : row) {
+                String print = cell.isOccupied() ? cell.getActivePiece().getName() : "X";
+                System.out.print(" "+print+" ");
+            }
+            System.out.println();
+        }
     }
 
 }

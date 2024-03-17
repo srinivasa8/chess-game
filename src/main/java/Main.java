@@ -16,9 +16,10 @@ public class Main {
 
     public static void main(String[] args) {
         Player whitePlayer = new Player("USER1", Color.WHITE);
-        Player blackPlayer = new Player("USER1", Color.WHITE);
+        Player blackPlayer = new Player("USER2", Color.BLACK);
         ChessBoard chessBoard = new ChessBoard(whitePlayer,blackPlayer);
-        Game game = new Game(chessBoard,whitePlayer,blackPlayer,true, GameStatus.ACTIVE);
+        Game game = new Game(chessBoard, whitePlayer, blackPlayer,true, GameStatus.ACTIVE);
+        game.playGame();
 
     }
 

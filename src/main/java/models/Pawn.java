@@ -5,7 +5,7 @@ public class Pawn extends Piece {
     private boolean isFirst; // first time pan can take two upward steps otherwise single step only.
 
     public Pawn(Color color) {
-        super(color);
+        super(color, "P");
         this.isFirst = true;
     }
 
@@ -20,11 +20,11 @@ public class Pawn extends Piece {
         boolean isValidMove = false;
 
         //For the column direction
-        if (isWhite && ((isFirst && (x - 2 == targetCell.getX() && y == targetCell.getY()))
-                || (x - 1 == targetCell.getX() && y == targetCell.getY()))) {
+        if (isWhite && ((isFirst && (x - 2 == targetX && y == targetY))
+                || (x - 1 == targetX && y == targetY))) {
             isValidMove = true;
-        } else if (!isWhite && ((isFirst && (x + 2 == targetCell.getX() && y == targetCell.getY()))
-                || (x - 1 == targetCell.getX() && y == targetCell.getY()))) {
+        } else if (!isWhite && ((isFirst && (x + 2 == targetX && y == targetY))
+                || (x + 1 == targetX && y == targetY))) {
             isValidMove = true;
         }
 

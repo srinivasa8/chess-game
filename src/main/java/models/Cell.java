@@ -12,12 +12,18 @@ public class Cell {
 
     private Piece activePiece;
 
-    public Cell(int x, int y, Piece activePiece){
-            this.x=x;
-            this.y=y;
-            this.activePiece=activePiece;
-            this.occupied=true;
-            activePiece.setPosition(x,y);
+    public Cell(int x, int y, Piece activePiece) {
+        this.x = x;
+        this.y = y;
+        this.activePiece = activePiece;
+        this.occupied = true;
+        activePiece.setPosition(x, y);
+    }
+
+    public Cell(int x, int y) {
+        this.x = x;
+        this.y = y;
+        this.occupied = false;
     }
 
     public int getX() {
@@ -64,7 +70,8 @@ public class Cell {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Cell cell)) return false;
-        return x == cell.x && y == cell.y && occupied == cell.occupied && color == cell.color && Objects.equals(activePiece, cell.activePiece);
+        return x == cell.x && y == cell.y && occupied == cell.occupied && color == cell.color
+                && Objects.equals(activePiece, cell.activePiece);
     }
 
     @Override

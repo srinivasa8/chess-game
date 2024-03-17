@@ -7,9 +7,11 @@ public abstract class Piece {
     protected Color color;
     protected int x;
     protected int y;
+    protected String name;
 
-    public Piece(Color color) {
+    public Piece(Color color, String name) {
         this.color=color;
+        this.name=name;
     }
 
     public abstract boolean isValidMove(Cell targetCell);
@@ -63,6 +65,14 @@ public abstract class Piece {
     @Override
     public int hashCode() {
         return Objects.hash(color, x, y);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
 }

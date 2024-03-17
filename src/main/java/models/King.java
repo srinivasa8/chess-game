@@ -5,7 +5,7 @@ import java.util.HashSet;
 public class King extends Piece {
 
     public King(Color color) {
-        super(color);
+        super(color, "Kg");
     }
 
     @Override
