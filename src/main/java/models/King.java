@@ -13,8 +13,9 @@ public class King extends Piece {
         int targetX = targetCell.getX();
         int targetY = targetCell.getY();
         if (!withinEdges(targetX, targetY) || (x == targetY && y == targetY)) return false;
-        for (int i = -1; i < 1; i++) {
-            for (int j = -1; j < 1; j++) {
+        for (int i = -1; i <= 1; i++) {
+            for (int j = -1; j <= 1; j++) {
+                if(i==0 && j==0) continue;
                 //target values are verified before this, so no need to verify whether they are within edge or not
                 if (x + i == targetX && y + j == targetY) {
                     if (!targetCell.isOccupied() || canCapture(targetCell)) {

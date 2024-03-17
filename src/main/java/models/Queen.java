@@ -44,6 +44,7 @@ public class Queen extends Piece{
                 break;
             } else{
                 isValidMove = (targetX == x && targetY == i);
+                if(isValidMove) break;
             }
         }
 
@@ -60,6 +61,7 @@ public class Queen extends Piece{
                     break;
                 } else{
                     isValidMove = (targetX == x && targetY == i);
+                    if(isValidMove) break;
                 }
             }
         }
@@ -77,6 +79,7 @@ public class Queen extends Piece{
                     break;
                 } else{
                     isValidMove = (targetX == i && targetY == y);
+                    if(isValidMove) break;
                 }
             }
         }
@@ -93,6 +96,7 @@ public class Queen extends Piece{
                         break;
                     } else{
                         isValidMove = (targetX == i && targetY == y);
+                        if(isValidMove) break;
                     }
                }
         }

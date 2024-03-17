@@ -89,7 +89,7 @@ public class Game {
 //        }
         Cell targetCell = chessBoard.getCell(targetX,targetY);
         if(targetCell==null) return false;
-        Cell currentKingCell = chessBoard.getCell(currentPlayer.getKing().getX(),currentPlayer.getKing().getY());
+        Cell currentKingCell = chessBoard.getCell(currentPlayer.getKing().getX(), currentPlayer.getKing().getY());
         Cell[][] cells = chessBoard.getCells();
         if(piece.isValidMove(targetCell,cells) && !isCheck(oppositePlayer, currentKingCell)){//if diagonal empty for pawn, it won't be true;
             System.out.println("[ENTERED]: Valid move + not check");
@@ -121,6 +121,7 @@ public class Game {
                 System.out.println("[ERROR]: Invalid move!");
                 return false;
             }
+            //need to add logic for safe move , need to do like move, check if threatful, then undo move
         } else{
             System.out.println("[ERROR2]:Invalid move......!");
              return false;

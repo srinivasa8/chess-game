@@ -16,48 +16,70 @@ public class Rook extends Piece{
         if (!withinEdges(targetX, targetY) || (x == targetX && y == targetY)) return false;
         //
         //Before element in x
-        for (int i = x - 1; i >= 0; i--) {
-            System.out.println("nx:" + x + " ny:" + y);
-            if (hasBlocker(cells[x][i])) break;
-            if ((targetX == x && targetY == i)) {
-                isValidMove = true;
+        for(int i = y-1; i>=0; i--) {
+            System.out.println("nx:"+x+" ny:"+y+" i:"+i);
+            if(cells[x][i].isOccupied()){
+                if(cells[x][i].getActivePiece().getColor().equals(color)){
+                    isValidMove =false;
+                } else{
+                    isValidMove = (targetX == x && targetY == i);
+                }
                 break;
+            } else{
+                isValidMove = (targetX == x && targetY == i);
+                if(isValidMove) break;
             }
         }
-        if (!isValidMove) {
+
+        if(!isValidMove) {
             //After element in x
-            for (int i = x - 1; i >= 0; i--) {
+            for (int i = y + 1; i < 8; i++) {
                 System.out.println("nx:" + x + " ny:" + y);
-                if (hasBlocker(cells[i][y])) break;
-                if ((targetX == i && targetY == y)) {
-                    isValidMove = true;
+                if(cells[x][i].isOccupied()){
+                    if(cells[x][i].getActivePiece().getColor().equals(color)){
+                        isValidMove =false;
+                    } else{
+                        isValidMove = (targetX == x && targetY == i);
+                    }
                     break;
+                } else{
+                    isValidMove = (targetX == x && targetY == i);
+                    if(isValidMove) break;
                 }
             }
         }
 
-        if (!isValidMove) {
+        if(!isValidMove) {
             //Above element in y
-            System.out.println("nx:" + x + " ny:" + y);
-            for (int i = x + 1; i < 8; i++) {
-                System.out.println("nx:" + x + " ny:" + y);
-                if (hasBlocker(cells[x][i])) break;
-                if ((targetX == x && targetY == i)) {
-                    //if(hasBlocker(cells[x][i])) break;
-                    isValidMove = true;
+            for (int i = x - 1; i >=0; i--) {
+                System.out.println("nx:" + x + " ny:" + y + " i:"+i);
+                if(cells[i][y].isOccupied()){
+                    if(cells[i][y].getActivePiece().getColor().equals(color)){
+                        isValidMove =false;
+                    } else{
+                        isValidMove = (targetX == i && targetY == y);
+                    }
                     break;
+                } else{
+                    isValidMove = (targetX == i && targetY == y);
+                    if(isValidMove) break;
                 }
             }
         }
-        if (!isValidMove) {
+        if(!isValidMove) {
             //Below element in y
             for (int i = x + 1; i < 8; i++) {
                 System.out.println("nx:" + x + " ny:" + y);
-                if (hasBlocker(cells[i][y])) break;
-                if (targetX == i && targetY == y) {
-                    //if(hasBlocker(cells[i][y])) break;
-                    isValidMove = true;
+                if(cells[i][y].isOccupied()){
+                    if(cells[i][y].getActivePiece().getColor().equals(color)){
+                        isValidMove =false;
+                    } else{
+                        isValidMove = (targetX == i && targetY == y);
+                    }
                     break;
+                } else{
+                    isValidMove = (targetX == i && targetY == y);
+                    if(isValidMove) break;
                 }
             }
         }
