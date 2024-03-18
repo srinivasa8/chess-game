@@ -91,20 +91,32 @@ public class Game {
         if(targetCell==null) return false;
         Cell currentKingCell = chessBoard.getCell(currentPlayer.getKing().getX(), currentPlayer.getKing().getY());
         Cell[][] cells = chessBoard.getCells();
-        if(piece.isValidMove(targetCell,cells) && !isCheck(oppositePlayer, currentKingCell)){//if diagonal empty for pawn, it won't be true;
+        if(piece.isValidMove(targetCell,cells)){//if diagonal empty for pawn, it won't be true;
             System.out.println("[ENTERED]: Valid move + not check");
             if(targetCell.isOccupied() && piece.canCapture(targetCell)){
                 piece.setX(targetX);
                 piece.setY(targetY);
 
+                Piece prevPieceAtTargetCell = targetCell.getActivePiece();
                 //kill opposite
-                KilledPieces.add(targetCell.getActivePiece());
+                KilledPieces.add(prevPieceAtTargetCell);
 
                 targetCell.setActivePiece(piece);
                 targetCell.setOccupied(true);
 
                 cell.setOccupied(false);
                 cell.setActivePiece(null);
+                Cell kingCell  = piece instanceof King ? targetCell : currentKingCell;
+                if(isCheck(oppositePlayer, kingCell)){
+                    System.out.println("[ERROR]: Invalid move as it can cause check mate!");
+                    rollBackMove(piece,cell,targetCell,prevPieceAtTargetCell);
+                    return false;
+                } else{
+                    //Assigning capture piece with invalid positions as its moved out of chess board.
+                    prevPieceAtTargetCell.setX(-100);
+                    prevPieceAtTargetCell.setY(-100);
+                    prevPieceAtTargetCell.setKilled(true);
+                }
             }
             else if(!targetCell.isOccupied()){
                 System.out.println("[ADDING]: @"+targetX+" @"+targetY);
@@ -116,6 +128,12 @@ public class Game {
 
                 cell.setOccupied(false);
                 cell.setActivePiece(null);
+                Cell kingCell  = piece instanceof King ? targetCell : currentKingCell;
+                if(isCheck(oppositePlayer, kingCell)){
+                    System.out.println("[ERROR]: Invalid move as it can cause check mate!");
+                    rollBackMove(piece,cell,targetCell,null);
+                    return false;
+                }
             }
             else {
                 System.out.println("[ERROR]: Invalid move!");
@@ -138,7 +156,19 @@ public class Game {
 //        return false;
 //    }
 
-
+private void rollBackMove(Piece piece, Cell currentCell, Cell targetCell, Piece prevPieceAtTarget){
+        //rollBack
+        if(prevPieceAtTarget!=null){
+            targetCell.setActivePiece(prevPieceAtTarget);
+            targetCell.setOccupied(true);
+        } else {
+            targetCell.setOccupied(false);
+        }
+        piece.setX(currentCell.getX());
+        piece.setY(currentCell.getY());
+        currentCell.setActivePiece(piece);
+        currentCell.setOccupied(true);
+}
 
     private boolean withinEdges(int targetX, int targetY){
         return targetX >= 0 && targetX < 8 && targetY >= 0 && targetY < 8;
@@ -154,14 +184,14 @@ public class Game {
             System.out.println("Other king threat! x: "+oppositePlayer.getKing().getX()+" y: "+oppositePlayer.getKing().getY());
             return true;
         }
-        if(oppositePlayer.getQueen().isValidMove(currentKingCell,cells)) {
+        if(!oppositePlayer.getQueen().isKilled() && oppositePlayer.getQueen().isValidMove(currentKingCell,cells)) {
             System.out.println("Other queen threat! x: "+oppositePlayer.getQueen().getX()+" y: "+oppositePlayer.getQueen().getY());
            return true;
         }
         Rook [] rooks = oppositePlayer.getRooks();
 
         for(Rook rook : rooks){
-            if(rook.isValidMove(currentKingCell,cells)) {
+            if(!rook.isKilled() && rook.isValidMove(currentKingCell,cells)) {
                 System.out.println("Other rook threat! x: "+rook.getX()+" y: "+rook.getY());
                 return true;
             }
@@ -169,7 +199,7 @@ public class Game {
 
         Knight[] knights = oppositePlayer.getKnights();
         for(Knight knight : knights){
-            if(knight.isValidMove(currentKingCell,cells)) {
+            if(!knight.isKilled() && knight.isValidMove(currentKingCell,cells)) {
                 System.out.println("Other knight threat! x: "+knight.getX()+" y: "+knight.getY());
                 return true;
             }
@@ -178,7 +208,7 @@ public class Game {
         Bishop[] bishops = oppositePlayer.getBishops();
 
         for(Bishop bishop : bishops){
-            if(bishop.isValidMove(currentKingCell,cells)) {
+            if(!bishop.isKilled() && bishop.isValidMove(currentKingCell,cells)) {
                 System.out.println("Other bishop threat! x: "+bishop.getX()+" y: "+bishop.getY());
                 return true;
             }
@@ -186,7 +216,7 @@ public class Game {
 
         Pawn[] pawns = oppositePlayer.getPawns();
         for(Pawn pawn : pawns){
-            if(pawn.isValidMove(currentKingCell,cells)) {
+            if(!pawn.isKilled() && pawn.isValidMove(currentKingCell,cells)) {
                 System.out.println("Other pawn threat! x: "+pawn.getX()+" y: "+pawn.getY());
                 return true;
             }
@@ -232,7 +262,6 @@ public class Game {
         Player currentPlayer = null;
         System.out.print("---------------GAME STARTED!---------------");
         while (!q.isEmpty()) {
-
             currentPlayer = q.poll();
             System.out.print("color:: "+currentPlayer.getColor() +" userId: "+ currentPlayer.getName());
             if (!currentPlayer.getColor().equals(Color.WHITE)) {

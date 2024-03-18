@@ -8,10 +8,12 @@ public abstract class Piece {
     protected int x;
     protected int y;
     protected String name;
+    protected boolean isKilled;
 
     public Piece(Color color, String name) {
         this.color=color;
         this.name=name;
+        this.isKilled=false;
     }
 
     public abstract boolean isValidMove(Cell targetCell, Cell[][] cells);
@@ -73,6 +75,14 @@ public abstract class Piece {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public boolean isKilled() {
+        return isKilled;
+    }
+
+    public void setKilled(boolean killed) {
+        isKilled = killed;
     }
 
 }
