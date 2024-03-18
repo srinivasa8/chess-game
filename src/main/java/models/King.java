@@ -29,8 +29,9 @@ public class King extends Piece {
 
     public HashSet<Cell> getPossibleMoves(Cell[][] cells) {
         HashSet<Cell> possibleMoves = new HashSet<>();
-        for (int i = -1; i < 1; i++) {
-            for (int j = -1; j < 1; j++) {
+        //m
+        for (int i = -1; i <= 1; i++) {
+            for (int j = -1; j <= 1; j++) {
                 if(i==0 && j==0) continue;
                 int newX = x + i;
                 int newY = y + j;

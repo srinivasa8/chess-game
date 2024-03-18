@@ -1,9 +1,11 @@
 package models;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import java.util.Scanner;
 
@@ -113,8 +115,8 @@ public class Game {
                     return false;
                 } else{
                     //Assigning capture piece with invalid positions as its moved out of chess board.
-                    prevPieceAtTargetCell.setX(-100);
-                    prevPieceAtTargetCell.setY(-100);
+                    //prevPieceAtTargetCell.setX(-100);
+                    //prevPieceAtTargetCell.setY(-100);
                     prevPieceAtTargetCell.setKilled(true);
                 }
             }
@@ -224,7 +226,7 @@ private void rollBackMove(Piece piece, Cell currentCell, Cell targetCell, Piece 
         return false;
     }
 
-    boolean isCheckMate(Player currentPlayer, Player oppositePlayer) {
+    boolean isCheckMate2(Player currentPlayer, Player oppositePlayer) {
         King king = oppositePlayer.getKing();
         Cell kingCell = chessBoard.getCell(king.getX(), king.getY());
         if (isCheck(currentPlayer, kingCell)) {
@@ -240,6 +242,63 @@ private void rollBackMove(Piece piece, Cell currentCell, Cell targetCell, Piece 
         return false;
     }
 
+    public boolean isCheckMate(Player currentPlayer, Player oppositePlayer) {
+        King king = oppositePlayer.getKing();
+        Cell kingCell = chessBoard.getCell(king.getX(), king.getY());
+        if (isCheck(currentPlayer, kingCell)) {
+            HashSet<Cell> possibleMoves = king.getPossibleMoves(chessBoard.getCells());
+            System.out.println("set: " + possibleMoves);
+            for (Cell cell : possibleMoves) {
+                if (!isCheck(currentPlayer, cell)) {
+                    return false;
+                }
+            }
+            return !isCheckMateEliminatedWithOtherPieceMoves(currentPlayer,oppositePlayer,kingCell);
+        }
+        return false;
+    }
+
+    boolean isCheckMateEliminatedWithOtherPieceMoves(Player currentPlayer, Player oppositePlayer, Cell kingCell) {
+        //King king = oppositePlayer.getKing();
+        HashMap<Cell, List<Cell>> allPossibleMovesByPlayer = chessBoard.getAllPossibleMovesByPlayer(oppositePlayer);
+        //getAllPossibleMovesByPlayer
+        //Cell kingCell = chessBoard.getCell(king.getX(), king.getY());
+        for(Map.Entry<Cell, List<Cell>> entry : allPossibleMovesByPlayer.entrySet()){
+            Cell currentCell = entry.getKey();
+            Piece piece = entry.getKey().getActivePiece();
+            for(Cell targetCell : entry.getValue()) {
+                Piece prevPieceAtTarget = null;
+                if(targetCell.isOccupied()){
+                    prevPieceAtTarget = targetCell.getActivePiece();
+                }
+                testPrint("BEFORE DUMMY MOVE");
+                move(currentCell.getX(),currentCell.getY(), targetCell.getX(), targetCell.getY(), currentPlayer,oppositePlayer);
+                testPrint("AFTER DUMMY MOVE");
+                if(!isCheck(oppositePlayer,kingCell)){
+                    System.out.println("Checkmate was possible but can be eliminated by moving piece from x: "+piece.getX()+", " +
+                            "y: "+piece.getX()+" to tx:"+targetCell.getX()+" ty:"+targetCell.getY());
+                    rollBackMove(piece,currentCell,targetCell,prevPieceAtTarget);
+                    testPrint("AFTER DUMMY ROLLBACK");
+                    return true;
+                }
+                rollBackMove(piece,currentCell,targetCell,prevPieceAtTarget);
+                testPrint("AFTER DUMMY ROLLBACK");
+            }
+        }
+
+//        if (isCheck(currentPlayer, kingCell)) {
+//            HashSet<Cell> possibleMoves = king.getPossibleMoves(chessBoard.getCells());
+//            System.out.println("set: " + possibleMoves);
+//            for (Cell cell : possibleMoves) {
+//                if (!isCheck(currentPlayer, cell)) {
+//                    return false;
+//                }
+//            }
+//            return true;
+//        }
+        return false;
+    }
+
     /*
       boolean isCheck(Player oppositePlayer, Cell kingCell){
           //All possible moves from black player(opposite)
@@ -252,6 +311,13 @@ private void rollBackMove(Piece piece, Cell currentCell, Cell targetCell, Piece 
           return false;
       }
      */
+
+    void testPrint(String status){
+        System.out.print("=============================start============================================");
+        System.out.print(status+": ");
+        chessBoard.printBoard();
+        System.out.print("===============================end==========================================");
+    }
 
     public void playGame() {
         gameStatus = GameStatus.ACTIVE;
@@ -287,9 +353,9 @@ private void rollBackMove(Piece piece, Cell currentCell, Cell targetCell, Piece 
             if(isResigned) break;
             chessBoard.printBoard();
             if (isCheckMate(currentPlayer, oppositePlayer)) {
-                System.out.print("CHECK MATE!");
-                System.out.print(currentPlayer.getName() + " WON!");
-                System.out.print("Congratulations!");
+                System.out.println("CHECK MATE! ");
+                System.out.print(currentPlayer.getName() + " WON! Congratulations!");
+                break;
             }
             q.add(currentPlayer);
         }

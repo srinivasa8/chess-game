@@ -1,6 +1,9 @@
 package models;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 public class ChessBoard {
     private final Cell[][] cells;
@@ -68,40 +71,41 @@ public class ChessBoard {
     }
 
 
-    void addIfValid(HashSet<Cell> list, Cell cell, Piece piece) {
-        if (piece.isValidMove(cell,cells)) {
-            list.add(cell);
+    void addIfValid(HashMap<Cell,List<Cell>> possibleMovesMap, Piece piece, Cell targetCell) {
+        if (!piece.isKilled() && piece.isValidMove(targetCell,cells)) {
+            Cell currentCell = cells[piece.getX()][piece.getY()];
+            possibleMovesMap.getOrDefault(currentCell, new ArrayList<>()).add(targetCell);
         }
     }
 
-    public HashSet<Cell> getAllPossibleMovesByPlayer(Player player) {
+    public HashMap<Cell, List<Cell>> getAllPossibleMovesByPlayer(Player player) {
         Color color = player.getColor();
-        HashSet<Cell> possibleMoveSet = new HashSet<>();
+        HashMap<Cell, List<Cell>> possibleMovesMap = new HashMap<>();
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                Cell cell = cells[i][j];
-                //skip if cell already has same colored piece
-                if (color.equals(cell.getActivePiece().getColor())) continue;
-                addIfValid(possibleMoveSet, cell, player.getKing());
-                addIfValid(possibleMoveSet, cell, player.getQueen());
+                Cell targetCell = cells[i][j];
+                //skip if cell already diff has same colored piece
+                if (targetCell.isOccupied() && !color.equals(targetCell.getActivePiece().getColor())) continue;
+                //addIfValid(possibleMovesMap, player.getKing(), targetCell);
+                addIfValid(possibleMovesMap, player.getQueen(), targetCell);
                 for (Rook rook : player.getRooks()) {
-                    addIfValid(possibleMoveSet, cell, rook);
+                    addIfValid(possibleMovesMap, rook, targetCell);
                 }
                 for (Knight knight : player.getKnights()) {
-                    addIfValid(possibleMoveSet, cell, knight);
+                    addIfValid(possibleMovesMap, knight, targetCell);
                 }
                 for (Bishop bishop : player.getBishops()) {
-                    addIfValid(possibleMoveSet, cell, bishop);
+                    addIfValid(possibleMovesMap, bishop, targetCell);
                 }
                 for (Pawn pawn : player.getPawns()) {
-                    addIfValid(possibleMoveSet, cell, pawn);
+                    addIfValid(possibleMovesMap, pawn, targetCell);
                 }
             }
         }
-        return possibleMoveSet;
+        return possibleMovesMap;
     }
 
-    void printBoard(){
+    public void printBoard(){
         String color = "\u001B[40m";//black
         String RESET = "\u001B[0m";
         String GREEN = "\u001B[32m";
