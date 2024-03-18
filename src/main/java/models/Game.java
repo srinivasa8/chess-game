@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Scanner;
 
+import static models.GameStatus.RESIGN;
+
 public class Game {
 
     private ChessBoard chessBoard;
@@ -39,9 +41,9 @@ public class Game {
         String[] commands;
         boolean isValidInput = false;
         while(true) {
-            System.out.println(" Enter the input in the form of {sourceX} {sourceY} {targetX} {targetY} or {RESIGN}");
+            System.out.println(" Enter the input in the form of {sourceX} {sourceY} {targetX} {targetY} or Type RESIGN to resign from the  game!");
             String input = sc.nextLine();
-            if (input.contains(GameStatus.RESIGN.toString())) {
+            if (input.contains(RESIGN.toString())) {
                 return new MoveInput(true);
             }
              commands = input.split(" ");
@@ -71,7 +73,7 @@ public class Game {
             return false;
         }
 
-        Cell cell = chessBoard.getCell(x,y);//[x][y];
+        Cell cell = chessBoard.getCell(x,y);
 
         if(cell==null || !cell.isOccupied()){
             System.out.println("[ERROR]: No piece found!");
@@ -80,15 +82,10 @@ public class Game {
 
         Piece piece = cell.getActivePiece();
         if(!piece.getColor().equals(currentPlayer.getColor())){
-            System.out.println("[ERROR]: You can move only your colored piece!");
+            System.out.println("[ERROR]: You can move only your("+currentPlayer.getColor().toString().toLowerCase()+") pieces.");
             return false;
         }
-//        Player currentPlayer= whitePlayer;
-//        Player oppositePlayer= blackPlayer;
-//        if(!isWhitePlayerTurn){
-//            currentPlayer=blackPlayer;
-//            oppositePlayer=whitePlayer;
-//        }
+
         Cell targetCell = chessBoard.getCell(targetX,targetY);
         if(targetCell==null) return false;
         Cell currentKingCell = chessBoard.getCell(currentPlayer.getKing().getX(), currentPlayer.getKing().getY());
@@ -150,16 +147,7 @@ public class Game {
 
     }
 
-//    private boolean isPawnDiagonal(Piece piece, int targetX, int targetY){
-//        if (piece instanceof Pawn) {
-//           return piece.canCapture(targetX, targetY);
-//        }//pawn can only move in forward steps but can capture on diagonal but
-//        //Other type of piece can capture on their steps only pawn has unique way to capture on diagonal way.
-//        return false;
-//    }
-
 private void rollBackMove(Piece piece, Cell currentCell, Cell targetCell, Piece prevPieceAtTarget){
-        //rollBack
         if(prevPieceAtTarget!=null){
             targetCell.setActivePiece(prevPieceAtTarget);
             targetCell.setOccupied(true);
@@ -176,8 +164,6 @@ private void rollBackMove(Piece piece, Cell currentCell, Cell targetCell, Piece 
         return targetX >= 0 && targetX < 8 && targetY >= 0 && targetY < 8;
     }
 
-
-    //opposite player, current king
     boolean isCheck(Player oppositePlayer, Cell currentKingCell){
 
         //Only queen, rook, bishop, knight, other king can attack a king
@@ -285,32 +271,8 @@ private void rollBackMove(Piece piece, Cell currentCell, Cell targetCell, Piece 
                 testPrint("AFTER DUMMY ROLLBACK");
             }
         }
-
-//        if (isCheck(currentPlayer, kingCell)) {
-//            HashSet<Cell> possibleMoves = king.getPossibleMoves(chessBoard.getCells());
-//            System.out.println("set: " + possibleMoves);
-//            for (Cell cell : possibleMoves) {
-//                if (!isCheck(currentPlayer, cell)) {
-//                    return false;
-//                }
-//            }
-//            return true;
-//        }
         return false;
     }
-
-    /*
-      boolean isCheck(Player oppositePlayer, Cell kingCell){
-          //All possible moves from black player(opposite)
-          HashSet<Cell> allPossibleMoves = chessBoard.getAllPossibleMovesByPlayer(oppositePlayer);
-          for(Cell cell : allPossibleMoves){
-              if(cell.equals(kingCell)){
-                  return true;
-              }
-          }
-          return false;
-      }
-     */
 
     void testPrint(String status){
         System.out.print("=============================start============================================");
@@ -323,27 +285,25 @@ private void rollBackMove(Piece piece, Cell currentCell, Cell targetCell, Piece 
         gameStatus = GameStatus.ACTIVE;
         q.add(whitePlayer);
         q.add(blackPlayer);
-        // while()
         Player oppositePlayer = null;
         Player currentPlayer = null;
-        System.out.print("---------------GAME STARTED!---------------");
+        System.out.println("---------------GAME STARTED!---------------");
+        System.out.println();
         while (!q.isEmpty()) {
             currentPlayer = q.poll();
-            System.out.print("color:: "+currentPlayer.getColor() +" userId: "+ currentPlayer.getName());
             if (!currentPlayer.getColor().equals(Color.WHITE)) {
-                System.out.print(" BLACK TURN: ");
+                System.out.print(currentPlayer.getName()+" (BLACK TURN PLAYER) TURN: ");
                 oppositePlayer = whitePlayer;
             } else{
-                System.out.print(" WHITE TURN: ");
+                System.out.print(currentPlayer.getName()+" (WHITE PLAYER) TURN: ");
                 oppositePlayer=blackPlayer;
             }
             boolean isResigned=false;
             while(true) {
-                //System.out.print(" Enter your input: ");
                 MoveInput moveInput = takeInput();
                 if (moveInput.isResigned()) {
-                    System.out.print(currentPlayer.getName() + " resigned. so " + oppositePlayer.getName() + " WON!");
-                    System.out.print("Congratulations!");
+
+                    System.out.println(currentPlayer.getName() + " resigned. So " + oppositePlayer.getName() + " WON! Congratulations!");
                     isResigned=true;
                     break;
                 }
@@ -354,15 +314,12 @@ private void rollBackMove(Piece piece, Cell currentCell, Cell targetCell, Piece 
             chessBoard.printBoard();
             if (isCheckMate(currentPlayer, oppositePlayer)) {
                 System.out.println("CHECK MATE! ");
-                System.out.print(currentPlayer.getName() + " WON! Congratulations!");
+                System.out.println(currentPlayer.getName() + " WON! Congratulations!");
                 break;
             }
             q.add(currentPlayer);
         }
-        System.out.print("---------------GAME ENDED!---------------");
+        System.out.println("---------------GAME ENDED!---------------");
     }
 
-//    void batchMoves(){
-//        move()
-//    }
 }
