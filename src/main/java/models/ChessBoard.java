@@ -72,7 +72,7 @@ public class ChessBoard {
     }
 
 
-    void addIfValid(HashMap<Cell, List<Cell>> possibleMovesMap, Piece piece, Cell targetCell) {
+    private void addIfValid(HashMap<Cell, List<Cell>> possibleMovesMap, Piece piece, Cell targetCell) {
         if (!piece.isKilled() && piece.isValidMove(targetCell, cells)) {
             Cell currentCell = cells[piece.getX()][piece.getY()];
             possibleMovesMap.getOrDefault(currentCell, new ArrayList<>()).add(targetCell);

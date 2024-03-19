@@ -17,7 +17,7 @@ public class Player {
         initializePieces();
     }
 
-    void initializePieces() {
+    private void initializePieces() {
         this.king = new King(color);
         this.queen= new Queen(color);
         this.rooks = new Rook[2];

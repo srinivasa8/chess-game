@@ -1,7 +1,7 @@
 import models.ChessBoard;
 import models.Color;
 import service.ChessGameService;
-import service.Impl.GameServiceImpl;
+import service.Impl.ChessGameServiceImpl;
 import models.GameStatus;
 import models.Player;
 
@@ -14,8 +14,9 @@ public class Main {
         Player whitePlayer = new Player("USER1", Color.WHITE);
         Player blackPlayer = new Player("USER2", Color.BLACK);
         ChessBoard chessBoard = new ChessBoard(whitePlayer, blackPlayer);
-        ChessGameService chessGameService = new GameServiceImpl(chessBoard, whitePlayer, blackPlayer, GameStatus.ACTIVE);
+        ChessGameService chessGameService = new ChessGameServiceImpl(chessBoard, whitePlayer, blackPlayer, GameStatus.ACTIVE);
         chessGameService.playGame();
+        System.out.println("Game status: "+chessGameService.getGameStatus());
     }
 
     static void moveBatch(ChessGameService chessGameService,Player whitePlayer, Player blackPlayer,ChessBoard chessBoard){

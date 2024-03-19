@@ -2,8 +2,8 @@ package models;
 
 public class MoveInput {
 
-    private int currentX;
-    private int currentY;
+    private int sourceX;
+    private int sourceY;
     private int targetX;
     private int targetY;
     private boolean isResigned;
@@ -13,29 +13,15 @@ public class MoveInput {
 
     }
 
-    public MoveInput(int currentX, int currentY, int targetX, int targetY) {
-        this.currentX = currentX;
-        this.currentY = currentY;
+    public MoveInput(int sourceX, int sourceY, int targetX, int targetY) {
+        this.sourceX = sourceX;
+        this.sourceY = sourceY;
         this.targetX = targetX;
         this.targetY = targetY;
         this.isResigned = false;
     }
 
-    public int getCurrentX() {
-        return currentX;
-    }
 
-    public void setCurrentX(int currentX) {
-        this.currentX = currentX;
-    }
-
-    public int getCurrentY() {
-        return currentY;
-    }
-
-    public void setCurrentY(int currentY) {
-        this.currentY = currentY;
-    }
 
     public int getTargetX() {
         return targetX;
@@ -47,6 +33,22 @@ public class MoveInput {
 
     public int getTargetY() {
         return targetY;
+    }
+
+    public int getSourceX() {
+        return sourceX;
+    }
+
+    public void setSourceX(int sourceX) {
+        this.sourceX = sourceX;
+    }
+
+    public int getSourceY() {
+        return sourceY;
+    }
+
+    public void setSourceY(int sourceY) {
+        this.sourceY = sourceY;
     }
 
     public void setTargetY(int targetY) {

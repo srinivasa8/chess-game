@@ -1,5 +1,6 @@
 package service;
 
+import models.GameStatus;
 import models.Player;
 
 public interface ChessGameService {
@@ -9,5 +10,7 @@ public interface ChessGameService {
     void playGame();
 
     boolean isCheckMate(Player currentlayer, Player oppositePlayer);
+
+    GameStatus getGameStatus();
 
 }

@@ -1,7 +1,5 @@
 package utils;
 
-import models.Color;
-
 public class Constants {
 
     public static final String BLACK_COLOR  = "\u001B[30m";

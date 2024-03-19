@@ -27,7 +27,7 @@ import java.util.Scanner;
 
 import static models.GameStatus.RESIGN;
 
-public class GameServiceImpl implements ChessGameService {
+public class ChessGameServiceImpl implements ChessGameService {
 
     private ChessBoard chessBoard;
     private Player whitePlayer;
@@ -36,17 +36,18 @@ public class GameServiceImpl implements ChessGameService {
 
     private GameStatus gameStatus;
 
-    private Queue<Player> q = new LinkedList<>();
+    private Queue<Player> playerQueue;
 
-    public GameServiceImpl(ChessBoard chessBoard, Player whitePlayer, Player blackPlayer, GameStatus gameStatus) {
+    private final List<Piece> KilledPieces;
+
+    public ChessGameServiceImpl(ChessBoard chessBoard, Player whitePlayer, Player blackPlayer, GameStatus gameStatus) {
         this.chessBoard = chessBoard;
         this.whitePlayer = whitePlayer;
         this.blackPlayer = blackPlayer;
         this.gameStatus = GameStatus.ACTIVE;
-        this.q = new LinkedList<>();
+        this.playerQueue = new LinkedList<>();
+        this.KilledPieces = new ArrayList<>();
     }
-
-    private final List<Piece> KilledPieces = new ArrayList<>();
 
     private MoveInput takeInput() {
         Scanner sc = new Scanner(System.in);
@@ -95,14 +96,14 @@ public class GameServiceImpl implements ChessGameService {
     }
 
     @Override
-    public boolean move(int x, int y, int targetX, int targetY, Player currentPlayer, Player oppositePlayer) {
+    public boolean move(int sourceX, int sourceY, int targetX, int targetY, Player currentPlayer, Player oppositePlayer) {
 
         if (!withinEdges(targetX, targetY)) {
             printMessage("Invalid source or destination positions!", PrintType.ERROR);
             return false;
         }
 
-        Cell cell = chessBoard.getCell(x, y);
+        Cell cell = chessBoard.getCell(sourceX, sourceY);
 
         if (cell == null || !cell.isOccupied()) {
             printMessage("No piece found at given position!", PrintType.ERROR);
@@ -275,14 +276,14 @@ public class GameServiceImpl implements ChessGameService {
 
     @Override
     public void playGame() {
-        q.add(whitePlayer);
-        q.add(blackPlayer);
+        playerQueue.add(whitePlayer);
+        playerQueue.add(blackPlayer);
         Player oppositePlayer = null;
         Player currentPlayer = null;
         printMessage("---------------GAME STARTED!---------------", PrintType.INFO);
         System.out.println();
-        while (!q.isEmpty()) {
-            currentPlayer = q.poll();
+        while (!playerQueue.isEmpty()) {
+            currentPlayer = playerQueue.poll();
             if (!currentPlayer.getColor().equals(Color.WHITE)) {
                 printMessage(currentPlayer.getName() + " (BLACK TURN PLAYER) TURN: ", PrintType.INFO);
                 oppositePlayer = whitePlayer;
@@ -299,7 +300,7 @@ public class GameServiceImpl implements ChessGameService {
                     gameStatus = GameStatus.RESIGNED;
                     break;
                 }
-                boolean isMoved = move(moveInput.getCurrentX(), moveInput.getCurrentY(), moveInput.getTargetX(), moveInput.getTargetY(), currentPlayer, oppositePlayer);
+                boolean isMoved = move(moveInput.getSourceX(), moveInput.getSourceY(), moveInput.getTargetX(), moveInput.getTargetY(), currentPlayer, oppositePlayer);
                 if (isMoved) break;
             }
             if (isResigned) break;
@@ -310,9 +311,13 @@ public class GameServiceImpl implements ChessGameService {
                 printMessage(currentPlayer.getName() + " WON! Congratulations!",PrintType.ALERT);
                 break;
             }
-            q.add(currentPlayer);
+            playerQueue.add(currentPlayer);
         }
         printMessage("---------------GAME ENDED!---------------", PrintType.INFO);
     }
 
+    @Override
+    public GameStatus getGameStatus() {
+        return gameStatus;
+    }
 }

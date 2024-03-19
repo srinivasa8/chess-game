@@ -18,7 +18,6 @@ public abstract class Piece {
 
     public abstract boolean isValidMove(Cell targetCell, Cell[][] cells);
 
-
     public boolean canCapture(Cell targetCell){
         return targetCell==null || !targetCell.getActivePiece().getColor().equals(color);
     }

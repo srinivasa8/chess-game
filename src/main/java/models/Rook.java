@@ -14,7 +14,6 @@ public class Rook extends Piece{
 
         boolean isValidMove = false;
         if (!withinEdges(targetX, targetY) || (x == targetX && y == targetY)) return false;
-        //
         //Before element in x
         for(int i = y-1; i>=0; i--) {
             if(cells[x][i].isOccupied()){
@@ -80,10 +79,6 @@ public class Rook extends Piece{
             }
         }
         return isValidMove && (!targetCell.isOccupied() || canCapture(targetCell));
-    }
-
-    private boolean hasBlocker(Cell targetCell){
-        return targetCell.isOccupied() && targetCell.getActivePiece().getColor().equals(color);
     }
 
 }
