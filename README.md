@@ -16,7 +16,7 @@ This Java application presents a basic implementation of a chess game. It includ
 ![LLD.png](LLD.png)
 
 ## Steps to run the application
-1. Clone or download the Spring Boot project from the repository (if not already available).    
+1. Clone or download the project from the repository (if not already available).    
    ```bash
    https://github.com/srinivasa8/chess-game.git
 2.	Open the project using an IDE like IntelliJ IDEA, Eclipse, or Spring Tool Suite.
