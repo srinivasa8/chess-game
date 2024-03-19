@@ -1,8 +1,9 @@
 package models;
 
+import utils.Constants;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
 public class ChessBoard {
@@ -15,7 +16,7 @@ public class ChessBoard {
         initializeEmptyCells();
     }
 
-    void initializeCellsWithPieces(Player player) {
+    private void initializeCellsWithPieces(Player player) {
         int firstRowIndex = player.getColor().equals(Color.BLACK) ? 0 : 7;
 
         Rook[] rooks = player.getRooks();
@@ -47,9 +48,9 @@ public class ChessBoard {
 
     }
 
-    void initializeEmptyCells() {
-        for(int i=2;i<6;i++){
-            for(int j=0;j<8;j++){
+    private void initializeEmptyCells() {
+        for (int i = 2; i < 6; i++) {
+            for (int j = 0; j < 8; j++) {
                 cells[i][j] = new Cell(i, j);
             }
         }
@@ -71,8 +72,8 @@ public class ChessBoard {
     }
 
 
-    void addIfValid(HashMap<Cell,List<Cell>> possibleMovesMap, Piece piece, Cell targetCell) {
-        if (!piece.isKilled() && piece.isValidMove(targetCell,cells)) {
+    void addIfValid(HashMap<Cell, List<Cell>> possibleMovesMap, Piece piece, Cell targetCell) {
+        if (!piece.isKilled() && piece.isValidMove(targetCell, cells)) {
             Cell currentCell = cells[piece.getX()][piece.getY()];
             possibleMovesMap.getOrDefault(currentCell, new ArrayList<>()).add(targetCell);
         }
@@ -105,28 +106,18 @@ public class ChessBoard {
         return possibleMovesMap;
     }
 
-    public void printBoard(){
-        String color = "\u001B[40m";//black
-        String RESET = "\u001B[0m";
-        String GREEN = "\u001B[32m";
-//        White:
-//
-//        Yellow: \u001B[33m
-//
-//        Black: \u001B[30m
-        for(Cell[] row : cells){
-            for(Cell cell : row) {
+    public void printBoard() {
+        for (Cell[] row : cells) {
+            for (Cell cell : row) {
                 String print = cell.isOccupied() ? cell.getActivePiece().getName() : "X";
-               // System.out.println(GREEN + "This text is green." + RESET);
-                color = "\u001B[30m";//black
-                if(cell.isOccupied() && cell.getActivePiece().getColor().equals(Color.WHITE)){
-                   color = "\u001B[37m";//
+                String color = Constants.BLACK_COLOR;
+                if (cell.isOccupied() && cell.getActivePiece().getColor().equals(Color.WHITE)) {
+                    color = Constants.WHITE_COLOR;
                 }
-                if(print.equals("X")){
-                    color = "\u001B[33m";
+                if (print.equals("X")) {
+                    color = Constants.YELLOW_COLOR;
                 }
-                String reset="\u001B[0m";
-                System.out.print(color+" "+print+" "+reset);
+                System.out.print(color + " " + print + " " + Constants.RESET_COLOR);
             }
             System.out.println();
         }

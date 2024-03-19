@@ -17,7 +17,6 @@ public class Rook extends Piece{
         //
         //Before element in x
         for(int i = y-1; i>=0; i--) {
-            System.out.println("nx:"+x+" ny:"+y+" i:"+i);
             if(cells[x][i].isOccupied()){
                 if(cells[x][i].getActivePiece().getColor().equals(color)){
                     isValidMove =false;
@@ -34,7 +33,6 @@ public class Rook extends Piece{
         if(!isValidMove) {
             //After element in x
             for (int i = y + 1; i < 8; i++) {
-                System.out.println("nx:" + x + " ny:" + y);
                 if(cells[x][i].isOccupied()){
                     if(cells[x][i].getActivePiece().getColor().equals(color)){
                         isValidMove =false;
@@ -52,7 +50,6 @@ public class Rook extends Piece{
         if(!isValidMove) {
             //Above element in y
             for (int i = x - 1; i >=0; i--) {
-                System.out.println("nx:" + x + " ny:" + y + " i:"+i);
                 if(cells[i][y].isOccupied()){
                     if(cells[i][y].getActivePiece().getColor().equals(color)){
                         isValidMove =false;
@@ -69,7 +66,6 @@ public class Rook extends Piece{
         if(!isValidMove) {
             //Below element in y
             for (int i = x + 1; i < 8; i++) {
-                System.out.println("nx:" + x + " ny:" + y);
                 if(cells[i][y].isOccupied()){
                     if(cells[i][y].getActivePiece().getColor().equals(color)){
                         isValidMove =false;

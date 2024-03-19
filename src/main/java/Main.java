@@ -1,6 +1,7 @@
 import models.ChessBoard;
 import models.Color;
-import models.Game;
+import service.ChessGameService;
+import service.Impl.GameServiceImpl;
 import models.GameStatus;
 import models.Player;
 
@@ -9,25 +10,15 @@ import java.util.List;
 
 public class Main {
 
-    //16 pieces
-    //8pawns
-    //2 rooks
-    //2 horses
-    //2 bishops
-    //queen
-    //king
-
     public static void main(String[] args) {
         Player whitePlayer = new Player("USER1", Color.WHITE);
         Player blackPlayer = new Player("USER2", Color.BLACK);
-        ChessBoard chessBoard = new ChessBoard(whitePlayer,blackPlayer);
-        Game game = new Game(chessBoard, whitePlayer, blackPlayer,true, GameStatus.ACTIVE);
-        game.playGame();
-        //moveBatch(game,whitePlayer,blackPlayer,chessBoard);
-
+        ChessBoard chessBoard = new ChessBoard(whitePlayer, blackPlayer);
+        ChessGameService chessGameService = new GameServiceImpl(chessBoard, whitePlayer, blackPlayer, GameStatus.ACTIVE);
+        chessGameService.playGame();
     }
 
-    static void moveBatch(Game game,Player whitePlayer, Player blackPlayer,ChessBoard chessBoard){
+    static void moveBatch(ChessGameService chessGameService,Player whitePlayer, Player blackPlayer,ChessBoard chessBoard){
         Player curr = whitePlayer;
         Player other = blackPlayer;
         for(String s : inputArray){
@@ -37,11 +28,8 @@ public class Main {
             int sourceY = Integer.parseInt(commands[1]);
             int targetX = Integer.parseInt(commands[2]);
             int targetY = Integer.parseInt(commands[3]);
-            game.move(sourceX,sourceY,targetX,targetY,curr,other);
-            if(sourceX==3 && sourceY==4 && targetX==3 && targetY==0 || s.equals("3 4 3 0")){
-                System.out.print("I'm in");
-            }
-            if (game.isCheckMate(curr, other)) {
+            chessGameService.move(sourceX,sourceY,targetX,targetY,curr,other);
+            if (chessGameService.isCheckMate(curr, other)) {
                 System.out.print("CHECK MATE! @:"+s);
                 System.out.print(curr.getName() + " WON!");
                 System.out.print("Congratulations!");

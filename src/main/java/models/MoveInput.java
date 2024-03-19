@@ -8,10 +8,11 @@ public class MoveInput {
     private int targetY;
     private boolean isResigned;
 
-    MoveInput(boolean isResigned){
-        this.isResigned=true;
+    public MoveInput(boolean isResigned) {
+        this.isResigned = true;
 
     }
+
     public MoveInput(int currentX, int currentY, int targetX, int targetY) {
         this.currentX = currentX;
         this.currentY = currentY;
